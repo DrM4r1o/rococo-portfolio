@@ -1,0 +1,141 @@
+---
+import { getCollection } from 'astro:content';
+
+const entries = (await getCollection('origins', ({ data }) => !data.draft)).sort(
+	(a, b) => a.data.order - b.data.order
+);
+---
+
+<section
+	id="origins-voyage"
+	class="fixed inset-0 z-40 flex flex-col"
+	aria-hidden="true"
+	inert
+	aria-label="Norte — Orígenes y genealogía"
+>
+	<div class="origins-backdrop pointer-events-none absolute inset-0"></div>
+
+	<header class="relative z-10 shrink-0 px-6 pt-8 pb-4 md:px-16 md:pt-12">
+		<div class="mx-auto w-full max-w-4xl">
+			<div class="origins-item flex items-center gap-3 font-cinzel text-[10px] tracking-[0.35em] text-bronze uppercase">
+				<span class="h-px w-12 bg-gradient-to-r from-transparent via-bronze to-transparent"></span>
+				<span>Coordenada Septentrional · 000°</span>
+				<span class="h-px w-12 bg-gradient-to-l from-transparent via-bronze to-transparent"></span>
+			</div>
+			<h2 class="origins-item gold-leaf-text mt-4 font-cinzel text-3xl tracking-[0.08em] uppercase sm:text-4xl md:text-5xl">
+				Norte — Orígenes &amp; Genealogía
+			</h2>
+			<p class="origins-item mt-3 max-w-2xl font-cormorant text-lg leading-relaxed text-on-surface-variant italic md:text-xl">
+				Del soporte de sistemas a la ingeniería full-stack: migraciones de core bancario, ERP escalables,
+				pasarelas de pago SaaS e IA generativa, traducidos en estaciones de oficio.
+			</p>
+		</div>
+	</header>
+
+	<div class="origins-scroll relative z-10 flex-1 overflow-y-auto px-6 pt-6 pb-32 md:px-16">
+		<ol class="mx-auto w-full max-w-4xl">
+			{
+				entries.map((entry, index) => {
+					const period = entry.data.period ?? (entry.data.year ? String(entry.data.year) : null);
+					return (
+						<li class="origins-item relative flex gap-5 md:gap-8">
+							<div class="relative flex w-10 shrink-0 justify-center md:w-14">
+								<span class="h-3 w-3 translate-y-2 rounded-full border border-bronze bg-primary-darkest shadow-[0_0_10px_#c5a869]" />
+								{index < entries.length - 1 && (
+									<span class="absolute top-6 bottom-0 w-px bg-gradient-to-b from-bronze/60 to-transparent" />
+								)}
+							</div>
+							<article class="flex-1 pb-10">
+								<div class="flex flex-wrap items-center gap-3 font-cinzel text-[10px] tracking-[0.25em] text-bronze uppercase">
+									{period && <span class="text-bronze-light">{period}</span>}
+									{entry.data.role && (
+										<>
+											<span class="h-px w-6 bg-bronze/40" />
+											<span>{entry.data.role}</span>
+										</>
+									)}
+									{entry.data.location && (
+										<span class="text-on-surface-variant/70 normal-case tracking-[0.15em]">
+											{entry.data.location}
+										</span>
+									)}
+								</div>
+								<h3 class="mt-2 font-garamond text-2xl text-on-surface md:text-3xl">{entry.data.title}</h3>
+								<p class="mt-2 font-body text-sm leading-relaxed text-on-surface-variant md:text-base">
+									{entry.data.description}
+								</p>
+								{entry.data.highlights.length > 0 && (
+									<ul class="mt-4 space-y-2.5">
+										{entry.data.highlights.map((highlight) => (
+											<li class="flex gap-3 font-body text-sm leading-relaxed text-on-surface-variant">
+												<span class="mt-2 h-1 w-1 shrink-0 rotate-45 bg-bronze" />
+												<span>{highlight}</span>
+											</li>
+										))}
+									</ul>
+								)}
+								{entry.data.meta.length > 0 && (
+									<ul class="mt-5 flex flex-wrap gap-2">
+										{entry.data.meta.map((item) => (
+											<li class="rounded-sm border border-outline-variant/50 bg-bronze/10 px-2 py-0.5 text-[10px] tracking-[0.12em] text-bronze uppercase">
+												{item}
+											</li>
+										))}
+									</ul>
+								)}
+							</article>
+						</li>
+					);
+				})
+			}
+		</ol>
+
+		{
+			entries.length === 0 && (
+				<p class="origins-item mx-auto w-full max-w-4xl font-cormorant text-lg text-on-surface-variant italic">
+					Los vestigios de este viaje aún se están catalogando.
+				</p>
+			)
+		}
+	</div>
+
+	<div class="pointer-events-none absolute inset-x-0 bottom-0 z-20 flex justify-center pb-6 md:pb-8">
+		<button
+			id="origins-return"
+			type="button"
+			class="origins-return pointer-events-auto flex cursor-pointer items-center gap-2 rounded-full border border-bronze/50 bg-primary-darkest/85 px-6 py-2.5 font-cinzel text-[10px] tracking-[0.28em] text-bronze uppercase shadow-[0_8px_24px_rgba(0,0,0,0.55)] backdrop-blur-md transition-colors hover:border-bronze hover:text-bronze-light focus:outline-none focus-visible:ring-2 focus-visible:ring-bronze"
+		>
+			<span class="material-symbols-outlined text-[16px]">explore</span>
+			<span>Volver a la brújula</span>
+		</button>
+	</div>
+</section>
+
+<style>
+	.origins-backdrop {
+		background:
+			radial-gradient(ellipse at 50% 40%, rgba(42, 78, 66, 0.92) 0%, rgba(28, 54, 45, 0.95) 55%, rgba(18, 34, 27, 0.97) 100%),
+			radial-gradient(circle at 15% 15%, rgba(68, 114, 99, 0.25) 0%, transparent 45%),
+			radial-gradient(ellipse at 50% 90%, rgba(197, 168, 105, 0.08) 0%, transparent 60%);
+	}
+
+</style>
+
+<script>
+	import { initOriginsVoyage } from '../../scripts/origins-voyage';
+
+	let cleanup: (() => void) | null = null;
+
+	const boot = () => {
+		if (!document.getElementById('origins-voyage')) return;
+		cleanup = initOriginsVoyage();
+	};
+
+	const teardown = () => {
+		cleanup?.();
+		cleanup = null;
+	};
+
+	document.addEventListener('astro:page-load', boot);
+	document.addEventListener('astro:before-swap', teardown);
+</script>

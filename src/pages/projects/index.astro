@@ -1,0 +1,82 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Header from "../../components/UI/Header.astro";
+import FooterAccordion from "../../components/UI/FooterAccordion.astro";
+import { getCollection } from "astro:content";
+
+const projects = (
+  await getCollection("projects", ({ data }) => !data.draft)
+).sort((a, b) => b.data.year - a.data.year);
+---
+
+<BaseLayout
+  title="Obras — La Brújula Rococó"
+  description="Casos de estudio y proyectos: vitrinas interactivas y autómatas celestes."
+>
+  <Header />
+
+  <main
+    class="relative z-10 mx-auto w-full max-w-5xl px-6 pt-32 pb-40 md:px-10"
+  >
+    <header class="border-b border-bronze/25 pb-8">
+      <span
+        class="font-cinzel text-[10px] tracking-[0.35em] text-bronze uppercase"
+        >Coordenada Este · 090°</span
+      >
+      <h1
+        class="gold-leaf-text mt-3 font-cinzel text-4xl tracking-wide md:text-5xl"
+      >
+        Obras
+      </h1>
+      <p
+        class="mt-3 max-w-2xl font-cormorant text-lg italic text-on-surface-variant"
+      >
+        Colección de vitrinas interactivas y orfebrería tipográfica.
+      </p>
+    </header>
+
+    <div class="mt-10 grid gap-5 md:grid-cols-2">
+      {
+        projects.map((project) => (
+          <a
+            href={`/projects/${project.id}/`}
+            class:list={[
+              "group flex flex-col rounded-sm border p-6 transition-colors",
+              project.data.featured
+                ? "border-bronze/50 bg-bronze/10 hover:bg-bronze/15"
+                : "border-outline-variant/40 bg-[#fcfaf6]/5 hover:border-bronze/50 hover:bg-bronze/10",
+            ]}
+          >
+            <div class="flex items-center justify-between font-cinzel text-[10px] tracking-[0.25em] text-bronze uppercase">
+              <span>{project.data.role}</span>
+              <span>{project.data.year}</span>
+            </div>
+            <h2 class="mt-3 font-garamond text-2xl text-on-surface transition-colors group-hover:text-bronze-light">
+              {project.data.title}
+            </h2>
+            <p class="mt-2 flex-1 font-body text-sm leading-relaxed text-on-surface-variant">
+              {project.data.description}
+            </p>
+            <ul class="mt-5 flex flex-wrap gap-2">
+              {project.data.stack.map((tech) => (
+                <li class="rounded-sm border border-outline-variant/50 bg-bronze/10 px-2 py-0.5 text-[10px] tracking-[0.12em] text-bronze uppercase">
+                  {tech}
+                </li>
+              ))}
+            </ul>
+          </a>
+        ))
+      }
+    </div>
+
+    {
+      projects.length === 0 && (
+        <p class="mt-10 font-cormorant italic text-on-surface-variant">
+          Sin obras aún.
+        </p>
+      )
+    }
+  </main>
+
+  <FooterAccordion />
+</BaseLayout>

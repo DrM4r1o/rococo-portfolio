@@ -1,0 +1,110 @@
+---
+interface Props {
+	cardinal: 'N' | 'E' | 'S' | 'O';
+	degrees: number;
+	coordinate: string;
+	title: string;
+	description: string;
+	meta?: string[];
+	cta?: { label: string; icon: string };
+}
+
+const { cardinal, degrees, coordinate, title, description, meta = [], cta } = Astro.props;
+
+const isHorizontal = cardinal === 'N' || cardinal === 'S';
+const isLeftAligned = cardinal === 'N' || cardinal === 'S' || cardinal === 'O';
+
+const variantClasses: Record<Props['cardinal'], string> = {
+	N: 'fixed top-0 inset-x-0 h-44 md:h-52 flex items-start pt-16 px-6 md:px-16 justify-between bg-gradient-to-b from-[#12221b]/95 via-[#1a332a]/80 to-transparent backdrop-blur-[3px] border-b border-bronze/20',
+	S: 'fixed bottom-0 inset-x-0 h-44 md:h-52 flex items-end pb-12 px-6 md:px-16 justify-between bg-gradient-to-t from-[#12221b]/95 via-[#1a332a]/80 to-transparent backdrop-blur-[3px] border-t border-bronze/20',
+	O: 'fixed inset-y-0 left-0 w-80 md:w-96 flex flex-col justify-center px-8 md:px-12 bg-gradient-to-r from-[#12221b]/95 via-[#1a332a]/80 to-transparent backdrop-blur-[3px] border-r border-bronze/20',
+	E: 'fixed inset-y-0 right-0 w-80 md:w-96 flex flex-col justify-center px-8 md:px-12 text-right bg-gradient-to-l from-[#12221b]/95 via-[#1a332a]/80 to-transparent backdrop-blur-[3px] border-l border-bronze/20',
+};
+
+const zoneId = `ambient-zone-${cardinal.toLowerCase()}`;
+---
+
+<div
+	id={zoneId}
+	data-zone={cardinal}
+	class:list={['zone-transition z-30', variantClasses[cardinal]]}
+	aria-hidden="true"
+>
+	{
+		isHorizontal ? (
+			<>
+				<div class="max-w-xl border-l-2 border-bronze py-1 pl-4 text-left">
+					<div class="flex items-center gap-2 font-cinzel text-xs tracking-[0.25em] text-bronze uppercase">
+						<span class="h-1.5 w-1.5 rounded-full bg-bronze shadow-[0_0_8px_#c5a869]" />
+						<span>{coordinate}</span>
+					</div>
+					<h3 class="mt-1 font-cinzel text-xl tracking-wide text-on-surface md:text-2xl">{title}</h3>
+					<p class="mt-1 font-cormorant text-base leading-snug italic text-on-surface-variant md:text-lg">
+						{description}
+					</p>
+				</div>
+				{meta.length > 0 && (
+					<div
+						class:list={[
+							'hidden flex-col space-y-1 text-right font-cinzel text-[10px] tracking-[0.2em] text-bronze uppercase opacity-90 lg:flex',
+							cardinal === 'N' ? 'pt-2' : 'pb-1',
+						]}
+					>
+						<span>{meta[0]}</span>
+						{meta[1] && <span class="font-mono text-[#a8beaf]">{meta[1]}</span>}
+						{meta[2] && <span class="font-semibold text-[#f7f1e3]">{meta[2]}</span>}
+					</div>
+				)}
+			</>
+		) : (
+			<div
+				class:list={[
+					'space-y-2',
+					cardinal === 'O' ? 'border-l-2 border-bronze pl-4' : 'border-r-2 border-bronze pr-4',
+				]}
+			>
+				<div
+					class:list={[
+						'flex items-center gap-2 font-cinzel text-xs tracking-[0.25em] text-bronze uppercase',
+						!isLeftAligned && 'justify-end',
+					]}
+				>
+					{isLeftAligned ? (
+						<>
+							<span class="h-1.5 w-1.5 rounded-full bg-bronze shadow-[0_0_8px_#c5a869]" />
+							<span>{coordinate}</span>
+						</>
+					) : (
+						<>
+							<span>{coordinate}</span>
+							<span class="h-1.5 w-1.5 rounded-full bg-bronze shadow-[0_0_8px_#c5a869]" />
+						</>
+					)}
+				</div>
+				<h3 class="font-cinzel text-2xl tracking-wide text-on-surface">{title}</h3>
+				<p class="font-cormorant text-base leading-relaxed italic text-on-surface-variant">{description}</p>
+				{cta && (
+					<div
+						class:list={[
+							'flex items-center gap-1 pt-2 font-cinzel text-[11px] tracking-widest text-bronze uppercase',
+							!isLeftAligned && 'justify-end',
+						]}
+					>
+						{isLeftAligned ? (
+							<>
+								<span>{cta.label}</span>
+								<span class="material-symbols-outlined text-[14px]">{cta.icon}</span>
+							</>
+						) : (
+							<>
+								<span class="material-symbols-outlined text-[14px]">{cta.icon}</span>
+								<span>{cta.label}</span>
+							</>
+						)}
+					</div>
+				)}
+			</div>
+		)
+	}
+	<span class="sr-only">Coordenada cardinal {degrees}°</span>
+</div>

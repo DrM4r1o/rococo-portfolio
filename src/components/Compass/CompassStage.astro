@@ -1,0 +1,188 @@
+---
+import CompassFallback from './CompassFallback.astro';
+import CardinalNode from './CardinalNode.astro';
+---
+
+<main
+	id="vitrine-canvas"
+	class="relative flex min-h-screen w-full flex-col items-center justify-center pt-4 pb-8 select-none"
+>
+	<div
+		class="theatrical-title theatrical-trans theatrical-target pointer-events-none relative z-10 mb-2 flex flex-col items-center px-4 text-center"
+	>
+		<div class="mb-1.5 flex items-center gap-3 opacity-80">
+			<span class="h-px w-12 bg-gradient-to-r from-transparent via-bronze to-transparent"></span>
+			<span class="font-cinzel text-[10px] tracking-[0.35em] text-bronze uppercase"
+				>ANNO DOMINI MDCCLXVIII · PORTFOLIO MMXXVI</span
+			>
+			<span class="h-px w-12 bg-gradient-to-l from-transparent via-bronze to-transparent"></span>
+		</div>
+		<h1
+			class="gold-leaf-text font-cinzel text-3xl font-normal tracking-[0.16em] uppercase drop-shadow-[0_2px_12px_rgba(0,0,0,0.5)] sm:text-4xl md:text-5xl lg:text-[3.25rem]"
+		>
+			Mario Esparza Pérez
+		</h1>
+		<p class="mt-1 max-w-xl font-cormorant text-sm tracking-wider text-on-surface-variant italic sm:text-base md:text-lg">
+			La Brújula Rococó — Instrumentarium Curatorial
+		</p>
+	</div>
+
+	<div
+		id="perspective-rig"
+		class="relative z-30 flex items-center justify-center p-2 transition-transform duration-700 ease-out"
+		style="perspective: 1400px;"
+	>
+		<div class="relative h-[340px] w-[340px] sm:h-[460px] sm:w-[460px] md:h-[500px] md:w-[500px]">
+			<div id="compass-canvas" class="absolute inset-0 z-10" aria-hidden="true"></div>
+			<CompassFallback />
+			<CardinalNode cardinal="N" degrees={0} label="Orígenes" action="origins" />
+			<CardinalNode cardinal="E" degrees={90} label="Obras" href="/projects" />
+			<CardinalNode cardinal="S" degrees={180} label="Artesanía" action="artesania" />
+			<CardinalNode cardinal="O" degrees={270} label="Manifiesto" href="/blog" />
+		</div>
+	</div>
+
+	<div
+		class="theatrical-hint theatrical-trans theatrical-target pointer-events-none mt-3 flex justify-center opacity-60 transition-opacity hover:opacity-90"
+	>
+		<div class="flex items-center gap-2 font-cinzel text-[10px] tracking-[0.25em] text-bronze uppercase">
+			<span class="h-1 w-1 rounded-full bg-bronze"></span>
+			<span>Alinee el cursor o toque una coordenada para despertar la estancia</span>
+			<span class="h-1 w-1 rounded-full bg-bronze"></span>
+		</div>
+	</div>
+</main>
+
+<script is:inline data-astro-rerun>
+	(() => {
+		const root = document.documentElement;
+		const stage = document.getElementById('vitrine-canvas');
+		const title = stage?.querySelector('.theatrical-title');
+		if (!stage || !title) return;
+
+		const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+		let alreadyBooted = false;
+		try {
+			alreadyBooted = sessionStorage.getItem('rococo:compassBooted') === '1';
+		} catch {
+			alreadyBooted = false;
+		}
+
+		root.dataset.compassBootAt = String(performance.now());
+
+		if (alreadyBooted || reducedMotion) {
+			root.dataset.compassBoot = 'soft';
+			return;
+		}
+
+		const rect = title.getBoundingClientRect();
+		const titleCenter = rect.top + rect.height / 2;
+		const shift = Math.max(0, window.innerHeight / 2 - titleCenter);
+
+		root.style.setProperty('--boot-shift', `${shift}px`);
+		root.dataset.compassBoot = 'pending';
+	})();
+</script>
+
+<script>
+	import { initCompassController } from '../../scripts/compass-controller';
+
+	const BOOT_HOLD_MS = 900;
+	const SOFT_HOLD_MS = 300;
+	const BOOT_TIMEOUT_MS = 3200;
+	const REVEAL_MS = 3000;
+	const SOFT_REVEAL_MS = 1200;
+
+	let teardownController: (() => void) | null = null;
+	let sceneRequested = false;
+	let released = false;
+	let releaseTimer: number | null = null;
+
+	const release = () => {
+		if (released) return;
+		released = true;
+
+		if (releaseTimer !== null) {
+			window.clearTimeout(releaseTimer);
+			releaseTimer = null;
+		}
+
+		const root = document.documentElement;
+		const state = root.dataset.compassBoot;
+		if (state !== 'pending' && state !== 'soft') {
+			root.dataset.compassBoot = 'done';
+			return;
+		}
+
+		const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+		const isSoft = state === 'soft';
+		const hold = isSoft ? SOFT_HOLD_MS : BOOT_HOLD_MS;
+		const revealState = isSoft ? 'soft-reveal' : 'reveal';
+		const revealMs = isSoft ? SOFT_REVEAL_MS : REVEAL_MS;
+		const startedAt = Number(root.dataset.compassBootAt ?? performance.now());
+		const wait = reducedMotion ? 0 : Math.max(0, hold - (performance.now() - startedAt));
+
+		window.setTimeout(() => {
+			if (root.dataset.compassBoot !== state) return;
+			root.dataset.compassBoot = revealState;
+			try {
+				sessionStorage.setItem('rococo:compassBooted', '1');
+			} catch {
+				/* storage unavailable */
+			}
+			window.setTimeout(() => {
+				if (root.dataset.compassBoot === revealState) root.dataset.compassBoot = 'done';
+			}, revealMs);
+		}, wait);
+	};
+
+	const boot = () => {
+		if (!document.getElementById('vitrine-canvas')) return;
+
+		released = false;
+		teardownController = initCompassController();
+
+		window.addEventListener('compass:ready', release, { once: true });
+		window.addEventListener('compass:unavailable', release, { once: true });
+		releaseTimer = window.setTimeout(release, BOOT_TIMEOUT_MS);
+
+		sceneRequested = true;
+		const mount = () => {
+			void import('../../scripts/compass-scene').then((mod) => mod.mountCompass3D());
+		};
+
+		if (typeof window.requestIdleCallback === 'function') {
+			window.requestIdleCallback(mount);
+		} else if (document.readyState === 'complete') {
+			mount();
+		} else {
+			window.addEventListener('load', mount, { once: true });
+		}
+	};
+
+	const cleanup = () => {
+		teardownController?.();
+		teardownController = null;
+
+		window.removeEventListener('compass:ready', release);
+		window.removeEventListener('compass:unavailable', release);
+		if (releaseTimer !== null) {
+			window.clearTimeout(releaseTimer);
+			releaseTimer = null;
+		}
+
+		const root = document.documentElement;
+		delete root.dataset.compassBoot;
+		delete root.dataset.compassBootAt;
+		root.style.removeProperty('--boot-shift');
+
+		if (sceneRequested) {
+			sceneRequested = false;
+			void import('../../scripts/compass-scene').then((mod) => mod.unmountCompass3D());
+		}
+	};
+
+	document.addEventListener('astro:page-load', boot);
+	document.addEventListener('astro:before-swap', cleanup);
+</script>

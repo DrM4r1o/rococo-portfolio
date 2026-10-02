@@ -1,0 +1,39 @@
+---
+interface Props {
+	cardinal: 'N' | 'E' | 'S' | 'O';
+	degrees: number;
+	label: string;
+	href?: string;
+	action?: string;
+}
+
+const { cardinal, degrees, label, href, action } = Astro.props;
+
+const position: Record<Props['cardinal'], string> = {
+	N: 'top-2 left-1/2 -translate-x-1/2',
+	S: 'bottom-2 left-1/2 -translate-x-1/2',
+	E: 'right-2 top-1/2 -translate-y-1/2',
+	O: 'left-2 top-1/2 -translate-y-1/2',
+};
+---
+
+<button
+	data-cardinal={cardinal}
+	data-degrees={degrees}
+	data-href={href}
+	data-action={action}
+	aria-label={`${label} — ${cardinal} ${degrees}°`}
+	class={`cardinal-node group absolute ${position[cardinal]} z-30 flex h-11 w-11 items-center justify-center focus:outline-none cursor-pointer sm:h-12 sm:w-12`}
+>
+	<div
+		class="flex h-full w-full items-center justify-center rounded-full border border-bronze bg-gradient-to-b from-marble-cream to-[#ede3d1] shadow-[0_4px_14px_rgba(0,0,0,0.55),inset_0_1px_2px_#fff] transition-all duration-300 group-hover:scale-110 group-hover:border-[#ffdca8] group-hover:bg-primary-deep group-focus-visible:ring-2 group-focus-visible:ring-bronze"
+	>
+		<span class="font-cinzel text-lg font-bold text-bronze-dark transition-colors group-hover:text-[#ffdca8]"
+			>{cardinal}</span
+		>
+	</div>
+	<span
+		class="pointer-events-none absolute top-full left-1/2 mt-1 -translate-x-1/2 whitespace-nowrap font-cinzel text-[10px] font-semibold tracking-widest text-[#f7f0e3] uppercase drop-shadow-[0_1px_3px_rgba(0,0,0,0.95)] transition-colors group-hover:text-[#ffdca8] sm:text-[11px]"
+		>{label}</span
+	>
+</button>

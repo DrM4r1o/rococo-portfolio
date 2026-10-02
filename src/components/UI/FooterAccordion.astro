@@ -1,0 +1,37 @@
+---
+const year = new Date().getFullYear();
+---
+
+<div
+	transition:persist
+	class="theatrical-trans theatrical-target fixed inset-x-0 bottom-0 z-40 translate-y-[calc(100%-24px)] transform transition-transform duration-500 ease-out hover:translate-y-0 focus-within:translate-y-0"
+	id="footer-accordion"
+>
+	<div class="flex w-full justify-center">
+		<button
+			type="button"
+			class="flex cursor-pointer items-center gap-1 rounded-t-lg border-x border-t border-bronze/30 bg-[#172c23]/95 px-6 py-1 font-cinzel text-[9px] tracking-[0.3em] text-bronze uppercase shadow-lg backdrop-blur-md"
+		>
+			<span class="material-symbols-outlined text-[13px]">expand_less</span>
+			<span>Archivum Imperiale</span>
+		</button>
+	</div>
+	<footer class="w-full border-t border-bronze/30 bg-[#12221b] px-8 py-6 shadow-2xl md:px-16">
+		<div class="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 md:flex-row">
+			<div class="flex flex-col items-center text-center md:items-start md:text-left">
+				<span class="font-cinzel text-xs tracking-[0.25em] text-[#faf5ea] uppercase">La Brújula Rococó</span>
+				<span class="font-cormorant text-xs text-[#a8beaf] italic"
+					>Navigational Horology &amp; Curated Antiquities Vault</span
+				>
+			</div>
+			<div
+				class="flex flex-col items-center gap-2 font-cinzel text-[10px] tracking-[0.2em] text-bronze uppercase md:flex-row md:gap-8"
+			>
+				<div>
+					Calibrated In: <span class="text-[#faf5ea]">Copper Oxide, Emerald Patina &amp; Statuary Bronze</span>
+				</div>
+				<div>Registry: <span class="text-[#faf5ea]">MDCCLXVIII — Anno {year}</span></div>
+			</div>
+		</div>
+	</footer>
+</div>

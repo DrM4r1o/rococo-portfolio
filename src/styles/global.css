@@ -1,0 +1,450 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary-fixed-dim: #a3d0c2;
+  --color-primary: #3a6459;
+  --color-primary-patina: #537d71;
+  --color-primary-deep: #1a2f27;
+  --color-primary-darkest: #12221b;
+  --color-bronze: #c5a869;
+  --color-bronze-dark: #755a31;
+  --color-bronze-light: #f1dfba;
+  --color-gold-leaf: #d4af37;
+  --color-marble-cream: #faf5eb;
+  --color-marble-dim: #ede4d4;
+  --color-surface-dim: #172b23;
+  --color-on-surface: #faf5ea;
+  --color-on-surface-variant: #d0c7b6;
+  --color-secondary: #755a31;
+  --color-outline: #717975;
+  --color-outline-variant: #c0c8c4;
+
+  --font-cinzel: "Cinzel", serif;
+  --font-cormorant: "Cormorant Garamond", serif;
+  --font-garamond: "EB Garamond", serif;
+  --font-body: "Inter", sans-serif;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow-x: hidden;
+}
+
+body {
+  overscroll-behavior: none;
+}
+
+::-webkit-scrollbar {
+  display: none;
+}
+
+/* Deep Patinated Copper Oxide / Dome Green atmospheric background */
+.patina-bg {
+  background-color: #1a2f27;
+  background-image:
+    radial-gradient(ellipse at 50% 45%, #2a4e42 0%, #1c362d 50%, #12221b 100%),
+    radial-gradient(
+      circle at 15% 15%,
+      rgba(68, 114, 99, 0.25) 0%,
+      transparent 45%
+    ),
+    radial-gradient(
+      circle at 85% 85%,
+      rgba(41, 74, 63, 0.3) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      ellipse at 50% 90%,
+      rgba(197, 168, 105, 0.08) 0%,
+      transparent 60%
+    );
+}
+
+/* Subtle etched metallic & gold leaf text style */
+.gold-leaf-text {
+  background: linear-gradient(
+    135deg,
+    #fff9ed 0%,
+    #e8d5b5 35%,
+    #c5a869 70%,
+    #ead8b2 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 0 24px rgba(197, 168, 105, 0.25);
+}
+
+.bronze-leaf-text {
+  background: linear-gradient(135deg, #f3ece1 10%, #d4af37 55%, #9a7b4f 90%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Ambient Zone active transitions */
+.zone-transition {
+  transition:
+    opacity 700ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 700ms cubic-bezier(0.16, 1, 0.3, 1),
+    background-color 800ms ease;
+}
+
+/* Dim and blur theatrical state transitions */
+.theatrical-trans {
+  transition:
+    filter 0.5s cubic-bezier(0.25, 1, 0.5, 1),
+    opacity 0.5s cubic-bezier(0.25, 1, 0.5, 1),
+    transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+/* Compass boot choreography — the title holds the centre while Three.js loads,
+   then ascends to its resting place as the instrument fades into view. */
+.theatrical-title,
+#perspective-rig,
+.theatrical-hint {
+  will-change: transform, opacity;
+}
+
+html[data-compass-boot="pending"] .theatrical-title {
+  transform: translateY(var(--boot-shift, 0px));
+  transition: none;
+}
+
+html[data-compass-boot="pending"] #perspective-rig {
+  opacity: 0;
+  transform: scale(0.96) translateY(10px);
+  transition: none;
+}
+
+html[data-compass-boot="soft"] #perspective-rig {
+  opacity: 0;
+  transform: scale(0.985);
+  transition: none;
+}
+
+html[data-compass-boot="pending"] .theatrical-hint,
+html[data-compass-boot="soft"] .theatrical-hint {
+  opacity: 0;
+  transition: none;
+}
+
+html[data-compass-boot="reveal"] .theatrical-title {
+  transform: translateY(0);
+  transition:
+    transform 2.6s cubic-bezier(0.16, 1, 0.3, 1),
+    filter 0.5s cubic-bezier(0.25, 1, 0.5, 1),
+    opacity 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+html[data-compass-boot="reveal"] #perspective-rig {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity 2.2s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 2.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+html[data-compass-boot="soft-reveal"] #perspective-rig {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity 1s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+html[data-compass-boot="reveal"] .theatrical-hint {
+  opacity: 0.6;
+  transition: opacity 1.6s cubic-bezier(0.16, 1, 0.3, 1) 0.4s;
+}
+
+html[data-compass-boot="soft-reveal"] .theatrical-hint {
+  opacity: 0.6;
+  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.15s;
+}
+
+/* Ambient zones (screen-edge panels) activation */
+[data-zone] {
+  opacity: 0;
+  pointer-events: none;
+}
+
+[data-zone="N"] {
+  transform: translateY(-1.5rem);
+}
+
+[data-zone="S"] {
+  transform: translateY(1.5rem);
+}
+
+[data-zone="O"] {
+  transform: translateX(-1.5rem);
+}
+
+[data-zone="E"] {
+  transform: translateX(1.5rem);
+}
+
+[data-zone].is-active {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translate(0, 0);
+}
+
+/* Hide the CSS/SVG fallback when JS is available to avoid a flash before WebGL
+   mounts. It is revealed again only if the 3D scene fails (progressive fallback). */
+#compass-fallback {
+  transition:
+    opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+    visibility 0.9s;
+}
+
+[data-js="1"] #compass-fallback {
+  opacity: 0;
+  visibility: hidden;
+}
+
+html.compass-fallback-active #compass-fallback {
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+body.is-focused .theatrical-target {
+  filter: blur(8px) brightness(0.35);
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+#stage-dimmer {
+  transition:
+    opacity 0.5s cubic-bezier(0.25, 1, 0.5, 1),
+    backdrop-filter 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+body.is-focused #stage-dimmer {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Origins voyage — in-place northern transit. Hidden until the GSAP timeline
+   reveals it; the compass is choreographed out through the bottom edge. */
+#origins-voyage {
+  opacity: 0;
+  visibility: hidden;
+}
+
+#origins-voyage .origins-scroll {
+  scrollbar-width: none;
+}
+
+html[data-compass-view="origins"] {
+  overscroll-behavior: none;
+}
+
+/* Chrome recedes into the patina while the instrument travels north. */
+html[data-compass-view="origins"] header.theatrical-target,
+html[data-compass-view="origins"] #footer-accordion {
+  opacity: 0;
+  filter: blur(10px);
+  pointer-events: none;
+}
+
+/* Artesanía voyage — in-place southern transit showcasing the featured works.
+   Hidden until the GSAP timeline reveals it; the compass is choreographed out
+   through the top edge. */
+#artesania-voyage {
+  opacity: 0;
+  visibility: hidden;
+}
+
+#artesania-voyage .artesania-scroll {
+  scrollbar-width: none;
+}
+
+html[data-compass-view="artesania"] {
+  overscroll-behavior: none;
+}
+
+/* Chrome recedes into the patina while the instrument travels south. */
+html[data-compass-view="artesania"] header.theatrical-target,
+html[data-compass-view="artesania"] #footer-accordion {
+  opacity: 0;
+  filter: blur(10px);
+  pointer-events: none;
+}
+
+/* Footer accordion reveal — soft ease-out-expo rise with staggered content */
+#footer-accordion {
+  transition:
+    translate 600ms cubic-bezier(0.65, 0, 0.35, 1),
+    transform 600ms cubic-bezier(0.65, 0, 0.35, 1),
+    filter 600ms cubic-bezier(0.65, 0, 0.35, 1),
+    opacity 600ms cubic-bezier(0.65, 0, 0.35, 1);
+  will-change: translate, transform;
+}
+
+#footer-accordion footer {
+  opacity: 0.35;
+  transform: translateY(1.75rem);
+  transition:
+    opacity 600ms cubic-bezier(0.65, 0, 0.35, 1),
+    transform 600ms cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+#footer-accordion:hover footer,
+#footer-accordion:focus-within footer {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+#footer-accordion .material-symbols-outlined {
+  transition: transform 600ms cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+#footer-accordion:hover .material-symbols-outlined,
+#footer-accordion:focus-within .material-symbols-outlined {
+  transform: rotate(180deg);
+}
+
+/* Minimal prose styling for MDX/Markdown reading layouts */
+.prose-rococo {
+  color: var(--color-on-surface-variant);
+  font-family: var(--font-garamond);
+  font-size: 1.125rem;
+  line-height: 1.9;
+}
+
+.prose-rococo > * + * {
+  margin-top: 1.25rem;
+}
+
+.prose-rococo h2,
+.prose-rococo h3 {
+  font-family: var(--font-cinzel);
+  color: var(--color-on-surface);
+  letter-spacing: 0.04em;
+  margin-top: 2.5rem;
+}
+
+.prose-rococo h2 {
+  font-size: 1.5rem;
+}
+
+.prose-rococo h3 {
+  font-size: 1.25rem;
+}
+
+.prose-rococo a {
+  color: var(--color-bronze);
+  text-decoration: underline;
+  text-decoration-color: color-mix(
+    in srgb,
+    var(--color-bronze) 50%,
+    transparent
+  );
+  text-underline-offset: 4px;
+}
+
+.prose-rococo strong {
+  color: var(--color-on-surface);
+}
+
+.prose-rococo blockquote {
+  border-left: 2px solid var(--color-bronze);
+  padding-left: 1.25rem;
+  font-style: italic;
+  color: var(--color-on-surface);
+}
+
+.prose-rococo code {
+  font-family: ui-monospace, monospace;
+  font-size: 0.85em;
+  background: rgba(197, 168, 105, 0.12);
+  border: 1px solid rgba(197, 168, 105, 0.25);
+  border-radius: 0.25rem;
+  padding: 0.15em 0.4em;
+}
+
+.prose-rococo pre {
+  background: #12221b;
+  border: 1px solid rgba(197, 168, 105, 0.25);
+  border-radius: 0.25rem;
+  padding: 1.25rem;
+  overflow-x: auto;
+}
+
+.prose-rococo pre code {
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .zone-transition,
+  .theatrical-trans,
+  .theatrical-title,
+  #perspective-rig,
+  .theatrical-hint,
+  #compass-fallback,
+  #stage-dimmer,
+  #footer-accordion,
+  #footer-accordion footer,
+  #footer-accordion .material-symbols-outlined {
+    transition-duration: 0.01ms !important;
+  }
+
+  html[data-compass-boot] .theatrical-title,
+  html[data-compass-boot] #perspective-rig {
+    transform: none !important;
+  }
+
+  html[data-compass-boot] #perspective-rig {
+    opacity: 1 !important;
+  }
+
+  html[data-compass-boot] .theatrical-hint {
+    opacity: 0.6 !important;
+  }
+
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none !important;
+  }
+
+  #footer-accordion footer {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Page navigation — soft patinated crossfade between routes */
+@keyframes rococo-page-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes rococo-page-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  ::view-transition-old(root) {
+    animation: rococo-page-out 240ms cubic-bezier(0.4, 0, 1, 1) both;
+  }
+
+  ::view-transition-new(root) {
+    animation: rococo-page-in 480ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+}

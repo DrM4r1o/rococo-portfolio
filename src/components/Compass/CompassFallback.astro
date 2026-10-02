@@ -1,0 +1,296 @@
+---
+/**
+ * CSS/SVG fallback instrument. Rendered server-side and shown until (or unless)
+ * the WebGL scene mounts. It also serves as the no-JS / reduced-motion baseline.
+ */
+---
+
+<div id="compass-fallback" class="absolute inset-0 z-10 flex items-center justify-center">
+	<div
+		id="compass-body"
+		class="relative flex h-full w-full items-center justify-center rounded-[26px] bg-gradient-to-br from-[#faf4e8] via-[#eee3cf] to-[#ded0bb] p-[10px] transition-all duration-700 ease-out sm:p-[14px]"
+		style="transform: rotateX(0deg) rotateY(0deg); transform-style: preserve-3d; box-shadow: rgba(7, 18, 14, 0.6) 0 20px 40px -10px, rgba(0, 0, 0, 0.4) 0 8px 16px, rgba(255, 255, 255, 0.95) 0 2px 4px inset;"
+	>
+		<div
+			class="relative flex h-full w-full items-center justify-center overflow-hidden rounded-[20px] bg-[#f5ede1] p-2 shadow-[inset_0_3px_12px_rgba(40,30,15,0.25)]"
+		>
+			<svg
+				class="pointer-events-none absolute inset-0 h-full w-full"
+				viewBox="0 0 500 500"
+				preserveAspectRatio="none"
+				aria-hidden="true"
+			>
+				<defs>
+					<linearGradient id="floor-base" x1="0%" x2="100%" y1="0%" y2="100%">
+						<stop offset="0%" stop-color="#faf4e8"></stop>
+						<stop offset="50%" stop-color="#efe3cf"></stop>
+						<stop offset="100%" stop-color="#ddcdb6"></stop>
+					</linearGradient>
+					<linearGradient id="floor-inlay" x1="0%" x2="100%" y1="0%" y2="100%">
+						<stop offset="0%" stop-color="#ffdca8"></stop>
+						<stop offset="100%" stop-color="#9a7b4f"></stop>
+					</linearGradient>
+					<filter id="floor-marble">
+						<feTurbulence
+							type="fractalNoise"
+							baseFrequency="0.011 0.022"
+							numOctaves="3"
+							seed="11"
+							result="turb"
+						></feTurbulence>
+						<feDisplacementMap
+							in="SourceGraphic"
+							in2="turb"
+							scale="26"
+							xChannelSelector="R"
+							yChannelSelector="G"></feDisplacementMap>
+					</filter>
+				</defs>
+				<rect x="0" y="0" width="500" height="500" fill="url(#floor-base)"></rect>
+				<g filter="url(#floor-marble)" fill="none" stroke-linecap="round">
+					<path d="M -20,120 C 140,60 260,200 520,110" stroke="rgba(112,130,120,0.3)" stroke-width="7"></path>
+					<path d="M -20,300 C 160,240 300,360 520,300" stroke="rgba(112,130,120,0.22)" stroke-width="6"
+					></path>
+					<path d="M 120,-20 C 60,150 200,320 110,520" stroke="rgba(150,164,154,0.22)" stroke-width="9"
+					></path>
+					<path d="M 340,-20 C 300,160 420,300 360,520" stroke="rgba(120,136,126,0.2)" stroke-width="8"
+					></path>
+					<path d="M -20,440 C 150,380 340,480 520,420" stroke="rgba(150,128,96,0.16)" stroke-width="5"
+					></path>
+				</g>
+				<rect
+					x="22"
+					y="22"
+					width="456"
+					height="456"
+					fill="none"
+					stroke="url(#floor-inlay)"
+					stroke-width="3"
+					opacity="0.85"></rect>
+				<rect
+					x="34"
+					y="34"
+					width="432"
+					height="432"
+					fill="none"
+					stroke="url(#floor-inlay)"
+					stroke-width="1.5"
+					opacity="0.5"></rect>
+				<g>
+					{
+						[
+							[62, 62],
+							[438, 62],
+							[62, 438],
+							[438, 438],
+						].map(([rx, ry]) => (
+							<g>
+								<path
+									d={`M ${rx},${ry - 26} L ${rx + 26},${ry} L ${rx},${ry + 26} L ${rx - 26},${ry} Z`}
+									fill="rgba(255,252,245,0.55)"
+									stroke="url(#floor-inlay)"
+									stroke-width="2.5"
+								/>
+								<circle cx={rx} cy={ry} r="9" fill="rgba(74,58,30,0.55)" stroke="url(#floor-inlay)" stroke-width="2" />
+							</g>
+						))
+					}
+				</g>
+			</svg>
+			<div
+				class="relative flex h-[98%] w-[98%] items-center justify-center overflow-hidden rounded-full border border-bronze/30 bg-gradient-to-b from-[#2a4e42] via-[#1d382f] to-[#142620] shadow-[inset_0_4px_16px_rgba(0,0,0,0.6),0_2px_4px_rgba(255,255,255,0.4)]"
+			>
+				<svg
+					class="pointer-events-none absolute inset-0 h-full w-full text-[#c5a869] opacity-75"
+					fill="none"
+					viewBox="0 0 500 500"
+				>
+					<circle cx="250" cy="250" opacity="0.4" r="242" stroke="currentColor" stroke-width="0.7"></circle>
+					<circle cx="250" cy="250" r="236" stroke="currentColor" stroke-dasharray="2 4" stroke-width="1.2"
+					></circle>
+					<circle cx="250" cy="250" r="226" stroke="currentColor" stroke-width="0.8"></circle>
+					<circle cx="250" cy="250" r="212" stroke="currentColor" stroke-dasharray="1 7" stroke-width="1.5"
+					></circle>
+					<circle cx="250" cy="250" r="198" stroke="currentColor" stroke-width="0.8"></circle>
+					<circle cx="250" cy="250" r="182" stroke="currentColor" stroke-dasharray="4 6" stroke-width="1.2"
+					></circle>
+					<circle cx="250" cy="250" opacity="0.5" r="140" stroke="currentColor" stroke-dasharray="2 3" stroke-width="0.6"
+					></circle>
+					<g opacity="0.85" stroke="currentColor">
+						<line stroke-width="2.5" x1="250" x2="250" y1="12" y2="42"></line>
+						<line stroke-width="2.5" x1="250" x2="250" y1="458" y2="488"></line>
+						<line stroke-width="2.5" x1="12" x2="42" y1="250" y2="250"></line>
+						<line stroke-width="2.5" x1="458" x2="488" y1="250" y2="250"></line>
+						<line stroke-width="1.8" x1="104" x2="124" y1="104" y2="124"></line>
+						<line stroke-width="1.8" x1="396" x2="376" y1="104" y2="124"></line>
+						<line stroke-width="1.8" x1="104" x2="124" y1="396" y2="376"></line>
+						<line stroke-width="1.8" x1="396" x2="376" y1="396" y2="376"></line>
+						<line stroke-width="1" x1="138" x2="150" y1="56" y2="78"></line>
+						<line stroke-width="1" x1="362" x2="350" y1="56" y2="78"></line>
+						<line stroke-width="1" x1="138" x2="150" y1="444" y2="422"></line>
+						<line stroke-width="1" x1="362" x2="350" y1="444" y2="422"></line>
+						<line stroke-width="1" x1="56" x2="78" y1="138" y2="150"></line>
+						<line stroke-width="1" x1="444" x2="422" y1="138" y2="150"></line>
+						<line stroke-width="1" x1="56" x2="78" y1="362" y2="350"></line>
+						<line stroke-width="1" x1="444" x2="422" y1="362" y2="350"></line>
+					</g>
+					<text
+						fill="currentColor"
+						font-family="'Cinzel', serif"
+						font-size="12"
+						font-weight="700"
+						letter-spacing="2"
+						text-anchor="middle"
+						x="250"
+						y="58">360° · 0°</text
+					>
+					<text
+						fill="currentColor"
+						font-family="'Cinzel', serif"
+						font-size="12"
+						font-weight="700"
+						letter-spacing="2"
+						text-anchor="middle"
+						x="442"
+						y="254">090°</text
+					>
+					<text
+						fill="currentColor"
+						font-family="'Cinzel', serif"
+						font-size="12"
+						font-weight="700"
+						letter-spacing="2"
+						text-anchor="middle"
+						x="250"
+						y="450">180°</text
+					>
+					<text
+						fill="currentColor"
+						font-family="'Cinzel', serif"
+						font-size="12"
+						font-weight="700"
+						letter-spacing="2"
+						text-anchor="middle"
+						x="58"
+						y="254">270°</text
+					>
+					<path
+						d="M 250,75 C 247,95 240,110 230,120 C 242,118 247,112 250,105 C 253,112 258,118 270,120 C 260,110 253,95 250,75 Z"
+						fill="currentColor"
+						opacity="0.6"></path>
+					<path
+						d="M 250,425 C 247,405 240,390 230,380 C 242,382 247,388 250,395 C 253,388 258,382 270,380 C 260,390 253,405 250,425 Z"
+						fill="currentColor"
+						opacity="0.6"></path>
+					<path
+						d="M 75,250 C 95,247 110,240 120,230 C 118,242 112,247 105,250 C 112,253 118,258 120,270 C 110,260 95,253 75,250 Z"
+						fill="currentColor"
+						opacity="0.6"></path>
+					<path
+						d="M 425,250 C 405,247 390,240 380,230 C 382,242 388,247 395,250 C 388,253 382,258 380,270 C 390,260 405,253 425,250 Z"
+						fill="currentColor"
+						opacity="0.6"></path>
+				</svg>
+
+				<div
+					class="relative flex h-[66%] w-[66%] items-center justify-center overflow-hidden rounded-full border border-bronze/40 bg-gradient-to-tr from-[#162a22] via-[#24473c] to-[#345c50] shadow-[inset_0_4px_16px_rgba(0,0,0,0.65),0_0_12px_rgba(197,168,105,0.25)]"
+				>
+					<svg class="absolute inset-0 h-full w-full text-[#ffdca8] opacity-45" viewBox="0 0 300 300">
+						<circle cx="150" cy="150" r="130" stroke="currentColor" stroke-dasharray="3 3" stroke-width="0.8"
+						></circle>
+						<circle cx="150" cy="150" r="95" stroke="currentColor" stroke-width="0.6"></circle>
+						<circle cx="150" cy="150" r="55" stroke="currentColor" stroke-dasharray="2 4" stroke-width="1.2"
+						></circle>
+						<polygon fill="url(#gold-facet-light)" points="150,20 158,142 150,150 142,142"></polygon>
+						<polygon fill="url(#gold-facet-dark)" points="150,20 150,150 142,142"></polygon>
+						<polygon fill="url(#gold-facet-light)" points="150,280 158,158 150,150 142,158"></polygon>
+						<polygon fill="url(#gold-facet-dark)" points="150,280 150,150 158,158"></polygon>
+						<polygon fill="url(#gold-facet-light)" points="280,150 158,158 150,150 158,142"></polygon>
+						<polygon fill="url(#gold-facet-dark)" points="280,150 150,150 158,158"></polygon>
+						<polygon fill="url(#gold-facet-light)" points="20,150 142,158 150,150 142,142"></polygon>
+						<polygon fill="url(#gold-facet-dark)" points="20,150 150,150 142,142"></polygon>
+						<polygon fill="currentColor" opacity="0.6" points="238,62 156,144 150,150 144,144"></polygon>
+						<polygon fill="currentColor" opacity="0.6" points="62,238 156,156 150,150 144,156"></polygon>
+						<polygon fill="currentColor" opacity="0.6" points="238,238 156,156 150,150 156,144"></polygon>
+						<polygon fill="currentColor" opacity="0.6" points="62,62 144,144 150,150 144,156"></polygon>
+						<defs>
+							<linearGradient id="gold-facet-light" x1="0%" x2="100%" y1="0%" y2="100%">
+								<stop offset="0%" stop-color="#fff0d0"></stop>
+								<stop offset="100%" stop-color="#c5a869"></stop>
+							</linearGradient>
+							<linearGradient id="gold-facet-dark" x1="0%" x2="100%" y1="0%" y2="100%">
+								<stop offset="0%" stop-color="#9a7b4f"></stop>
+								<stop offset="100%" stop-color="#553f1f"></stop>
+							</linearGradient>
+						</defs>
+					</svg>
+
+					<div
+						class="z-20 flex h-12 w-12 items-center justify-center rounded-full border border-[#5b421c]/40 bg-gradient-to-br from-[#ffdca8] via-[#c5a869] to-[#755a31] shadow-[0_4px_12px_rgba(0,0,0,0.5),inset_0_2px_4px_rgba(255,255,255,0.8)]"
+					>
+						<div
+							class="flex h-5 w-5 items-center justify-center rounded-full border border-[#ffdca8]/50 bg-gradient-to-tr from-[#162a22] to-[#3a6459] shadow-inner"
+						>
+							<div class="h-1.5 w-1.5 rounded-full bg-[#fffcf7] shadow-[0_0_6px_#fff]"></div>
+						</div>
+					</div>
+
+					<div
+						id="rococo-needle"
+						class="pointer-events-none absolute inset-0 z-10 flex items-center justify-center"
+						style="transform: rotate(0deg); transition: transform 600ms cubic-bezier(0.25, 1, 0.5, 1);"
+					>
+						<svg
+							class="h-[300px] w-24 drop-shadow-[0_16px_16px_rgba(0,0,0,0.7)] sm:h-[390px] sm:w-28 md:h-[450px] md:w-32"
+							fill="none"
+							viewBox="0 0 100 400"
+						>
+							<path
+								d="M 50,16 L 59,105 C 65,115 72,130 65,145 C 59,158 53,165 50,185 L 50,16 Z"
+								fill="url(#needle-gold-r)"></path>
+							<path
+								d="M 50,16 L 41,105 C 35,115 28,130 35,145 C 41,158 47,165 50,185 L 50,16 Z"
+								fill="url(#needle-gold-l)"></path>
+							<circle cx="50" cy="115" fill="#faf4e8" r="4.5" stroke="#755a31" stroke-width="1.2"></circle>
+							<circle cx="49" cy="113.5" fill="#ffffff" r="1.5"></circle>
+							<path
+								d="M 44,85 C 44,70 56,70 56,85 C 56,92 50,100 50,100 C 50,100 44,92 44,85 Z"
+								fill="#24473c"
+								stroke="#c5a869"
+								stroke-width="0.7"></path>
+							<path
+								d="M 50,215 L 56,260 C 62,280 66,305 58,335 C 54,350 51,365 50,380 L 50,215 Z"
+								fill="url(#needle-dark-r)"></path>
+							<path
+								d="M 50,215 L 44,260 C 38,280 34,305 42,335 C 46,350 49,365 50,380 L 50,215 Z"
+								fill="url(#needle-dark-l)"></path>
+							<circle cx="50" cy="340" fill="url(#needle-gold-r)" r="10.5" stroke="#5b421c" stroke-width="1.5"
+							></circle>
+							<circle cx="50" cy="340" fill="#24473c" r="4.5" stroke="#ffdca8" stroke-width="0.8"></circle>
+							<defs>
+								<linearGradient id="needle-gold-l" x1="0%" x2="100%" y1="0%" y2="100%">
+									<stop offset="0%" stop-color="#fff5dc"></stop>
+									<stop offset="45%" stop-color="#e2c282"></stop>
+									<stop offset="100%" stop-color="#9a7b4f"></stop>
+								</linearGradient>
+								<linearGradient id="needle-gold-r" x1="0%" x2="100%" y1="0%" y2="100%">
+									<stop offset="0%" stop-color="#e2c282"></stop>
+									<stop offset="60%" stop-color="#9a7b4f"></stop>
+									<stop offset="100%" stop-color="#553f1f"></stop>
+								</linearGradient>
+								<linearGradient id="needle-dark-l" x1="0%" x2="100%" y1="0%" y2="100%">
+									<stop offset="0%" stop-color="#8f6f3e"></stop>
+									<stop offset="100%" stop-color="#463114"></stop>
+								</linearGradient>
+								<linearGradient id="needle-dark-r" x1="0%" x2="100%" y1="0%" y2="100%">
+									<stop offset="0%" stop-color="#5a401c"></stop>
+									<stop offset="100%" stop-color="#231707"></stop>
+								</linearGradient>
+							</defs>
+						</svg>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

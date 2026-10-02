@@ -1,11 +1,60 @@
 ---
-import Welcome from '../components/Welcome.astro';
-import Layout from '../layouts/Layout.astro';
-
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/UI/Header.astro';
+import FooterAccordion from '../components/UI/FooterAccordion.astro';
+import AmbientZone from '../components/Compass/AmbientZone.astro';
+import CompassStage from '../components/Compass/CompassStage.astro';
+import OriginsVoyage from '../components/Origins/OriginsVoyage.astro';
+import ArtesaniaVoyage from '../components/Artesania/ArtesaniaVoyage.astro';
 ---
 
-<Layout>
-	<Welcome />
-</Layout>
+<BaseLayout>
+	<div
+		id="stage-dimmer"
+		class="pointer-events-none fixed inset-0 z-20 bg-[#0c1813]/60 opacity-0 backdrop-blur-[6px]"
+	>
+	</div>
+
+	<Header />
+
+	<AmbientZone
+		cardinal="N"
+		degrees={0}
+		coordinate="Coordenada Septentrional · 000°"
+		title="Norte — Orígenes & Genealogía"
+		description="El periplo formativo y las fundaciones curatoriales de una década consagrada a la arquitectura visual imperecedera."
+		meta={['Epoch: MDCCLXVIII', "LAT 43° 21' 09\" N", 'Garamond & Ordo']}
+	/>
+	<AmbientZone
+		cardinal="S"
+		degrees={180}
+		coordinate="Coordenada Meridional · 180°"
+		title="Sur — Artesanía & Obras"
+		description="Ingeniería full-stack: migraciones de core bancario, ERPs escalables con sincronización offline, microfrontends y microservicios, pasarelas de pago SaaS e IA generativa."
+		meta={['Angular · React · Spring Boot', 'Microfrontends & microservicios', 'Vitrina de 3 obras']}
+	/>
+	<AmbientZone
+		cardinal="O"
+		degrees={270}
+		coordinate="Occidente · 270°"
+		title="Oeste — Filosofía & Manifiesto"
+		description="«La belleza no es ornamento accidental, sino orden matemático iluminado por el espíritu.» Frente a lo efímero, arquitectura con reverberación."
+		cta={{ label: 'Canal epistolar', icon: 'arrow_forward' }}
+	/>
+	<AmbientZone
+		cardinal="E"
+		degrees={90}
+		coordinate="Oriente · 090°"
+		title="Este — Proyectos & Obras"
+		description="Colección de vitrinas interactivas, autómatas celestes y fundiciones tipográficas concebidas como orfebrería pura."
+		cta={{ label: 'Explorar Catálogo', icon: 'arrow_back' }}
+	/>
+
+	<CompassStage />
+
+	<OriginsVoyage />
+
+	<ArtesaniaVoyage />
+
+	<FooterAccordion />
+</BaseLayout>
